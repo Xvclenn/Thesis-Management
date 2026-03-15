@@ -1,10 +1,6 @@
-export default function Landing() {
-    return (
-        <div className="min-h-screen flex flex-col items-center justify-center">
-            <h1>Welcome to Diplom System</h1>
-            <p>
-                Please <a href="/login">login</a> to continue
-            </p>
-        </div>
-    );
+// src/app/page.tsx
+import { redirect } from "next/navigation";
+
+export default function Home() {
+    redirect("/login");
 }
