@@ -20,7 +20,7 @@ connectDB();
 // ✅ CORS middleware (ЭНЭ МАШ ЧУХАЛ)
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: process.env.NEXT_PUBLIC_URL || "http://localhost:3000",
         credentials: true,
     }),
 );
