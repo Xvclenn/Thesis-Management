@@ -5,34 +5,44 @@ const api = axios.create({
     baseURL: "http://localhost:8000",
 });
 
-export const fetcher = async (path: string, options = {}) => {
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // 🔥 TOKEN expired
+
+            // token устгах
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("user");
+
+            // login руу redirect
+            window.location.href = "/expired";
+        }
+
+        return Promise.reject(error);
+    },
+);
+
+// Token-ийг localStorage-с аваад Authorization header-д нэмэх
+export const fetcher = async <T = any>(
+    path: string,
+    options: { method?: string; data?: any } = {},
+): Promise<T> => {
+    const token = localStorage.getItem("token");
+
+    const headers: any = {};
+
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+
     const res = await api({
         url: path,
-        ...options,
+        method: options.method || "GET",
+        data: options.data || undefined,
+        headers,
     });
 
     return res.data;
 };
-
-// USAGE EXAMPLE
-
-// GET By ID request example
-// const data = await fetcher("/api/test/getTest/1", { method: "GET" });
-
-// GET request example
-// const data = await fetcher("/api/test/getTest", { method: "GET" });
-
-// POST request example
-// const data = await fetcher("/api/test/createTest", {
-//     method: "POST",
-//     data: { name: "Test Name", description: "Test Description" },
-// });
-
-// PUT request example
-// const data = await fetcher("/api/test/updateTest/1", {
-//     method: "PUT",
-//     data: { name: "Updated Test Name", description: "Updated Test Description" },
-// });
-
-// DELETE request example
-// const data = await fetcher("/api/test/deleteTest/1", { method: "DELETE" });

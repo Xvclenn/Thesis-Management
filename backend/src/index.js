@@ -4,6 +4,9 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 const testRoutes = require("./routes/testRoutes");
+const testDataRoutes = require("./routes/testDataRoutes");
+const thesisRoutes = require("./routes/thesisRoutes");
+const authRoutes = require("./routes/AuthRoutes/authRoutes");
 
 const app = express();
 const PORT = 8000;
@@ -29,6 +32,27 @@ app.get("/", (req, res) => {
 // Routes ----------------------------------------------------------
 // Test routes
 app.use("/api/test", testRoutes);
+app.use("/api/testData", testDataRoutes);
+
+// Thesis routes
+app.use("/api/thesis", thesisRoutes);
+
+// Auth routes
+app.use("/api/auth", authRoutes);
+
+// 404
+app.use((req, res) => {
+    res.status(404).json({ status: "error", message: "Route not found" });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({
+        status: "error",
+        message: err.message,
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
