@@ -18,10 +18,7 @@ app.use(cors());
 connectDB();
 
 // ✅ CORS middleware (ЭНЭ МАШ ЧУХАЛ)
-const allowedOrigins = [
-    "http://localhost:3000",
-    "https://thesis-management-one.vercel.app",
-];
+const allowedOrigins = [process.env.CLIENT_URL, process.env.CLIENT_URL_PROD];
 
 app.use(
     cors({
