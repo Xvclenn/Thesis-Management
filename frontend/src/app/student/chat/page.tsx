@@ -5,7 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { fetcher } from "@/utils/fetcher";
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
-import { CheckCheck, MessageCircle, Send, User2 } from "lucide-react";
+import {
+    CheckCheck,
+    ChevronLeft,
+    MessageCircle,
+    Send,
+    User2,
+} from "lucide-react";
 
 type Teacher = {
     _id: string;
@@ -121,9 +127,11 @@ export default function TeacherChatPage() {
     };
 
     return (
-        <div className="flex h-[85vh] pb-2 px-0.5 gap-3 overflow-hidden bg-[#F7F8FA]">
-            {/* LEFT - TEACHERS */}
-            <div className="w-64 flex flex-col rounded-xl bg-white shadow-md border-gray-100">
+        <div className="flex h-[85vh] pb-2 px-0.5 gap-3 overflow-hidden bg-[#F7F8FA] relative">
+            {/* LEFT SIDEBAR */}
+            <div
+                className={`absolute md:relative z-20 w-full md:w-64 h-full md:h-auto transition-transform duration-300 ${selectedTeacher ? "-translate-x-[-110%] md:translate-x-0" : "translate-x-0"} flex flex-col rounded-xl bg-white shadow-md border-gray-100`}
+            >
                 <div className="px-5 py-3.5 h-[66.5px] border-b border-gray-100">
                     <p className="text-[10px] uppercase tracking-widest text-gray-300">
                         Батлагдсан
@@ -139,6 +147,7 @@ export default function TeacherChatPage() {
                             Багш байхгүй
                         </p>
                     )}
+
                     {teachers.map((t) => (
                         <button
                             key={t._id}
@@ -146,25 +155,24 @@ export default function TeacherChatPage() {
                             className={`w-full flex items-center bg-accent rounded-xl mb-1 gap-3 px-3 py-2.5 text-left transition-colors cursor-pointer ${
                                 selectedTeacher?.userId === t.userId
                                     ? "bg-orange-100 shadow-sm shadow-orange-300/50"
-                                    : "hover:bg-orange-100 border-transparent hover:shadow-sm shadow-orange-300/50"
+                                    : "hover:bg-orange-100"
                             }`}
                         >
-                            <div className="w-16">
-                                <Image
-                                    src={t.image || "/assets/user.png"}
-                                    width={100}
-                                    height={100}
-                                    alt="user"
-                                    className="rounded-lg object-cover w-10 h-10 ring-1 ring-green-300 p-0.5"
-                                />
-                            </div>
-                            <div className="w-full flex-col">
+                            <Image
+                                src={t.image || "/assets/user.png"}
+                                width={100}
+                                height={100}
+                                alt="user"
+                                className="rounded-lg object-cover w-10 h-10 ring-1 ring-green-300 p-0.5"
+                            />
+
+                            <div className="flex-1">
                                 <div className="flex items-center justify-between">
                                     <p className="text-[13px] font-medium text-gray-800 truncate">
                                         {t.firstName} {t.lastName}
                                     </p>
                                     <span
-                                        className={`text-[11px] ml-1 ${
+                                        className={`text-[11px] ${
                                             selectedTeacher?.userId === t.userId
                                                 ? "text-emerald-500"
                                                 : "hidden"
@@ -174,7 +182,7 @@ export default function TeacherChatPage() {
                                     </span>
                                 </div>
                                 <div className="text-[11px] text-gray-500 flex items-center gap-1">
-                                    {t.status}{" "}
+                                    {t.status}
                                     <CheckCheck color="green" size={15} />
                                 </div>
                             </div>
@@ -182,32 +190,61 @@ export default function TeacherChatPage() {
                     ))}
                 </div>
             </div>
+
             {/* RIGHT CHAT */}
-            <div className="flex-1 rounded-xl border-gray-100 flex flex-col min-w-0">
+            <div
+                className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${selectedTeacher ? "w-full" : "hidden md:flex"}`}
+            >
                 {selectedTeacher ? (
                     <>
-                        <div className="flex items-center mb-3 gap-3 px-5 py-3.5 rounded-xl bg-white shadow-sm">
-                            <Image
-                                src={
-                                    selectedTeacher.image || "/assets/user.png"
-                                }
-                                width={100}
-                                height={100}
-                                alt="user"
-                                className="rounded-lg object-cover w-10 h-10 ring-1 ring-green-300 p-0.5"
-                            />
-                            <div>
-                                <p className="text-[14px] font-semibold text-gray-800">
-                                    {selectedTeacher.firstName}{" "}
-                                    {selectedTeacher.lastName}
-                                </p>
-                                <p className="text-[11px] text-emerald-500">
-                                    ● Идэвхтэй
-                                </p>
+                        {/* HEADER */}
+                        <div className="flex items-center justify-between mb-3 gap-3 px-4 md:px-5 py-3.5 rounded-xl bg-white shadow-sm">
+                            {/* 🔙 BACK BUTTON */}
+                            <button
+                                onClick={() => setSelectedTeacher(null)}
+                                className="md:hidden text-gray-500"
+                            >
+                                <ChevronLeft />
+                            </button>
+
+                            <div className="flex items-center gap-3">
+                                {/* MOBILE TEXT */}
+                                <div className="block md:hidden">
+                                    <p className="text-[14px] font-semibold text-gray-800">
+                                        {selectedTeacher.firstName}{" "}
+                                        {selectedTeacher.lastName}
+                                    </p>
+                                    <p className="text-[11px] text-right text-emerald-500">
+                                        ● Идэвхтэй
+                                    </p>
+                                </div>
+
+                                <Image
+                                    src={
+                                        selectedTeacher.image ||
+                                        "/assets/user.png"
+                                    }
+                                    width={100}
+                                    height={100}
+                                    alt="user"
+                                    className="rounded-lg object-cover w-10 h-10 ring-1 ring-green-300 p-0.5"
+                                />
+
+                                {/* DESKTOP TEXT */}
+                                <div className="hidden md:block">
+                                    <p className="text-[14px] font-semibold text-gray-800">
+                                        {selectedTeacher.firstName}{" "}
+                                        {selectedTeacher.lastName}
+                                    </p>
+                                    <p className="text-[11px] text-emerald-500">
+                                        ● Идэвхтэй
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex-1 rounded-xl shadow-md overflow-y-auto px-5 py-4 space-y-3 bg-white">
+                        {/* MESSAGES */}
+                        <div className="flex-1 rounded-xl shadow-md overflow-y-auto px-3 md:px-5 py-4 space-y-3 bg-white">
                             {messages.length === 0 && (
                                 <div className="flex flex-col items-center justify-center h-full text-gray-300 gap-2">
                                     <MessageCircle />
@@ -218,7 +255,6 @@ export default function TeacherChatPage() {
                             )}
 
                             {messages.map((msg) => {
-                                // 🔥 toString() хоёуланд нэмсэн
                                 const isMine =
                                     msg.sender?._id?.toString() ===
                                     user?.id?.toString();
@@ -246,14 +282,14 @@ export default function TeacherChatPage() {
                                         )}
 
                                         <div
-                                            className={`flex flex-col max-w-[65%] ${
+                                            className={`flex flex-col max-w-[80%] md:max-w-[65%] ${
                                                 isMine
                                                     ? "items-end"
                                                     : "items-start"
                                             }`}
                                         >
                                             <div
-                                                className={`px-3.5 py-2 rounded-2xl text-[13px] leading-relaxed wrap-break-words ${
+                                                className={`px-3.5 py-2 rounded-2xl text-[13px] wrap-break-words ${
                                                     isMine
                                                         ? "bg-orange-500 text-white rounded-br-sm"
                                                         : "bg-gray-100 text-gray-800 rounded-bl-sm"
@@ -261,7 +297,8 @@ export default function TeacherChatPage() {
                                             >
                                                 {msg.text}
                                             </div>
-                                            <span className="text-[10px] text-gray-400 mt-1 px-1">
+
+                                            <span className="text-[10px] text-gray-400 mt-1">
                                                 {formatTime(msg.createdAt)}
                                             </span>
                                         </div>
@@ -269,7 +306,7 @@ export default function TeacherChatPage() {
                                         {isMine && (
                                             <Image
                                                 src={
-                                                    user.image ||
+                                                    msg.sender.image ||
                                                     "/assets/user.png"
                                                 }
                                                 width={100}
@@ -281,28 +318,30 @@ export default function TeacherChatPage() {
                                     </div>
                                 );
                             })}
+
                             <div ref={messagesEndRef} />
                         </div>
 
-                        <div className="px-4 py-3 shadow-md mt-3 rounded-xl border-gray-100 bg-white flex items-center gap-2">
+                        {/* INPUT */}
+                        <div className="px-3 md:px-4 py-3 shadow-md mt-3 rounded-xl bg-white flex items-center gap-2">
                             <input
                                 value={text}
                                 onChange={(e) => setText(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                className="flex-1 bg-gray-50 border border-gray-200 rounded-md px-4 py-2 text-[13px] outline-none focus:border-orange-400 transition-colors placeholder:text-gray-400"
+                                className="flex-1 bg-gray-50 border border-gray-200 rounded-md px-4 py-2 text-[13px] outline-none focus:border-orange-400"
                                 placeholder="Мессеж бичих..."
                             />
                             <button
                                 onClick={handleSend}
                                 disabled={!text.trim()}
-                                className="w-9 h-9 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-40 flex items-center justify-center transition-colors shrink-0"
+                                className="w-9 h-9 rounded-full bg-orange-500 hover:bg-orange-600 disabled:opacity-40 flex items-center justify-center"
                             >
-                                <Send color="#fff" size={20} />
+                                <Send color="#fff" size={16} />
                             </button>
                         </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-xl shadow-md text-gray-300 gap-3">
+                    <div className="hidden md:flex flex-1 items-center justify-center bg-white rounded-xl shadow-md text-gray-300 gap-3">
                         <User2 />
                         <p className="text-sm">Багш сонгоно уу</p>
                     </div>
