@@ -77,7 +77,7 @@ export default function DataTable<T extends { id: string }>({
                     <div className="flex gap-2 ml-auto">
                         <button
                             onClick={() => setSelectedRows([])}
-                            className="text-xs px-3 py-1 rounded-lg border border-orange-200 hover:bg-orange-100 transition-colors"
+                            className="cursor-pointer text-xs px-3 py-1 rounded-lg border border-orange-200 hover:bg-orange-100 transition-colors"
                         >
                             Цуцлах
                         </button>
@@ -92,9 +92,9 @@ export default function DataTable<T extends { id: string }>({
                     </div>
                 ) : (
                     <table className="border-collapse w-full">
-                        <thead className="sticky uppercase top-0 text-left text-sm font-semibold z-10 shadow-sm">
+                        <thead className="sticky uppercase top-0 text-left text-xs font-semibold z-10 shadow-sm">
                             <tr>
-                                <th className="p-4">
+                                <th className="px-3">
                                     <div className="flex items-center">
                                         <Checkbox
                                             className="cursor-pointer"
@@ -104,8 +104,12 @@ export default function DataTable<T extends { id: string }>({
                                     </div>
                                 </th>
 
-                                <th className="w-10 px-3 py-3 text-gray-500 text-center">
+                                <th className="w-10 px-3 py-2 text-gray-500 text-center">
                                     №
+                                </th>
+
+                                <th className="px-4 py-2 text-gray-500">
+                                    <span>Зураг</span>
                                 </th>
 
                                 {columns.map((col, i) =>
@@ -113,7 +117,7 @@ export default function DataTable<T extends { id: string }>({
                                         <th
                                             key={i}
                                             scope="col"
-                                            className={`px-6 py-3 text-gray-500 w-100 truncate`}
+                                            className={`px-6 py-2 text-gray-500 w-100 truncate`}
                                         >
                                             {col.header}
                                         </th>
@@ -131,11 +135,11 @@ export default function DataTable<T extends { id: string }>({
                                 return (
                                     <tr
                                         key={i}
-                                        className={`border-t border-gray-100 transition-all hover:bg-gray-200 cursor-pointer ${
+                                        className={`border-t border-gray-100 text-xs transition-all hover:bg-gray-200 cursor-pointer ${
                                             isSelected ? "bg-gray-100" : ""
                                         }`}
                                     >
-                                        <td className="w-4 p-4">
+                                        <td className="w-4 px-3">
                                             <div className="flex items-center">
                                                 <Checkbox
                                                     className="cursor-pointer"
@@ -147,8 +151,24 @@ export default function DataTable<T extends { id: string }>({
                                             </div>
                                         </td>
 
-                                        <td className="w-10 px-3 py-3 text-xs text-gray-400 text-center tabular-nums">
+                                        <td className="w-10 px-3 py-2 text-xs text-gray-400 text-center tabular-nums">
                                             {rowNumber}
+                                        </td>
+
+                                        <td className="px-4 py-2">
+                                            <div className="flex items-center">
+                                                <Image
+                                                    src={
+                                                        (row as any).image
+                                                            ? (row as any).image
+                                                            : "/assets/user.png"
+                                                    }
+                                                    width={40}
+                                                    height={40}
+                                                    alt="user"
+                                                    className="rounded-full object-cover w-10 h-10"
+                                                />
+                                            </div>
                                         </td>
 
                                         {columns.map((col, j) => {
@@ -159,7 +179,7 @@ export default function DataTable<T extends { id: string }>({
                                                 return (
                                                     <td
                                                         key={j}
-                                                        className="px-6 py-4 text-sm truncate max-w-80"
+                                                        className="px-6 py-2 truncate"
                                                     >
                                                         {col.cell(row)}
                                                     </td>
@@ -171,7 +191,7 @@ export default function DataTable<T extends { id: string }>({
                                             return (
                                                 <td
                                                     key={j}
-                                                    className={`px-6 py-4 text-sm truncate max-w-80`}
+                                                    className={`px-6 py-2 truncate max-w-80`}
                                                     onClick={() => {
                                                         if (onRowClick) {
                                                             onRowClick(row); // ✅ Custom handler

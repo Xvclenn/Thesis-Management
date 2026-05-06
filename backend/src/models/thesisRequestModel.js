@@ -15,6 +15,12 @@ const thesisRequestSchema = new mongoose.Schema(
         description: {
             type: String,
         },
+
+        status: {
+            type: String,
+            enum: ["Хүлээгдэж байгаа", "Баталсан", "Татгалсан"],
+            default: "Хүлээгдэж байгаа",
+        },
     },
     { timestamps: true },
 );

@@ -5,7 +5,7 @@ import LoadingComp from "@/components/own/LoadingComp";
 import { fetcher } from "@/utils/fetcher";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { thesisColumns } from "./columns";
 
 interface Thesis {
@@ -16,6 +16,8 @@ interface Thesis {
     status: string;
     addedDate: string;
     editedDate: string;
+    student: string;
+    requestId: string;
 }
 
 // const data = [
@@ -339,7 +341,7 @@ export default function ThesisList() {
     const [error, setError] = useState<string | null>(null);
     const params = useParams();
 
-    console.log(params.slug);
+    // console.log(params.slug);
 
     const handleDelete = async (id: string) => {
         // const confirmed = await openConfirm({
@@ -374,7 +376,7 @@ export default function ThesisList() {
         console.log("ROW", row);
     };
 
-    const columns = thesisColumns(handleDelete, handleEdit);
+    const columns = thesisColumns(handleEdit);
 
     useEffect(() => {
         const getData = async () => {
@@ -389,7 +391,7 @@ export default function ThesisList() {
                     setData(res.data);
                 }
 
-                console.log(res.data);
+                console.log("RES", res.data);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -400,52 +402,11 @@ export default function ThesisList() {
         getData();
     }, []);
 
-    // useEffect(() => {
-    //     if (!params?.slug) return;
-
-    //     const fetchData = async () => {
-    //         setLoading(true);
-    //         try {
-    //             const res = await fetcher(`/api/thesis/${params.slug}`, {
-    //                 method: "GET",
-    //             });
-
-    //             if (!res?.success || !res.data) {
-    //                 setError("Сэдэв олдсонгүй");
-    //                 setData(null);
-    //             } else {
-    //                 setData(res.data);
-    //                 setError(null);
-    //             }
-    //         } catch (err) {
-    //             console.error("Error fetching thesis:", err);
-    //             setError("Серверийн алдаа гарлаа");
-    //             setData(null);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, [params.slug]);
-
     if (loading) return <LoadingComp />;
     if (error) return <p className="p-6 text-red-500">{error}</p>;
     if (!data) return <p className="p-6">Сэдэв олдсонгүй</p>;
 
     return (
-        // <div className="p-6 space-y-3 bg-white shadow rounded-lg">
-        //     <h1 className="text-2xl font-bold">{data.mongolian}</h1>
-        //     <p className="text-gray-500">{data.english}</p>
-        //     <p className="mt-2">{data.description}</p>
-        //     <p className="text-sm text-gray-400">
-        //         Нэмсэн: {new Date(data.addedDate).toLocaleString()}
-        //     </p>
-        //     <p className="text-sm text-gray-400">
-        //         Засварласан: {new Date(data.editedDate).toLocaleString()}
-        //     </p>
-        //     <p className="mt-2 font-semibold">Төлөв: {data.status}</p>
-        // </div>
         <div className="flex flex-col h-[88vh] bg-gray-100">
             {/* Summary Box */}
             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -482,9 +443,6 @@ export default function ThesisList() {
                     title="Төгсөлтийн сэдвүүд"
                     data={data.map((d) => ({ ...d, id: d._id }))}
                     columns={columns}
-                    // onRowClick={(row) =>
-                    //     router.push(`/teacher/thesis/${row._id}`)
-                    // }
                 />
             </div>
             {/* Modals */}

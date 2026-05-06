@@ -2,7 +2,7 @@ import { Column } from "@/components/own/data-table/types";
 import StatusBadge from "@/components/own/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/utils/formatDate";
-import { SquarePen, Trash2Icon } from "lucide-react";
+import { Check, SquarePen, Trash2Icon } from "lucide-react";
 
 type Thesis = {
     _id: string;
@@ -12,16 +12,17 @@ type Thesis = {
     status: string;
     addedDate: string;
     editedDate: string;
+    student: string;
+    requestId: string;
 };
 
 export const thesisColumns = (
-    onDelete: (id: string) => void,
     onEdit: (row: Thesis) => void,
 ): Column<Thesis>[] => [
     {
         header: "ID",
         accessor: "_id",
-        visible: false,
+        visible: true,
     },
     {
         header: "Сэдвийн нэр (Монгол)",
@@ -68,20 +69,17 @@ export const thesisColumns = (
                 >
                     <SquarePen size={14} />
                 </Button>
-                <Button
-                    variant="destructive"
-                    className="flex items-center gap-1.5 transition-all cursor-pointer"
-                    onClick={() => onDelete(row._id)}
+                {/* <Button
+                    variant="secondary"
+                    className="group flex text-green-800 bg-green-200 items-center gap-1.5 transition-all hover:bg-green-200 cursor-pointer"
+                    onClick={() => onApprove(row.requestId)}
                 >
-                    <Trash2Icon size={14} />
-                </Button>
+                    <Check size={14} />{" "}
+                    <span className="hidden group-hover:block transition-all">
+                        Батлах
+                    </span>
+                </Button> */}
             </div>
         ),
     },
-    // // 🔥 AUTO GENERATE TEST COLUMNS
-    // ...Array.from({ length: 10 }).map((_, i) => ({
-    //     header: `Тест${i === 0 ? "" : i}`,
-    //     accessor: `test${i === 0 ? "" : i}` as keyof Thesis,
-    //     visible: false,
-    // })),
 ];

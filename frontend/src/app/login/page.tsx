@@ -243,17 +243,23 @@ export default function LoginPage() {
             {/* RIGHT SIDE — IMAGE */}
             <div className="hidden lg:block relative w-1/2 m-4">
                 <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                    <Image
-                        src="/assets/rightside.png"
+                    {/* <Image
+                        src="/assets/school3.png"
                         alt="Login Background"
                         fill
                         className="object-cover"
-                    />
-                    {/* Overlay gradient */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent rounded-2xl" />
+                    /> */}
+                    <video
+                        src="/assets/pix.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                    ></video>
 
                     {/* Bottom quote card */}
-                    <div className="absolute bottom-8 left-8 right-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5">
+                    <div className="absolute bottom-8 italic left-8 right-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5">
                         <p className="text-white text-sm font-medium leading-relaxed">
                             "Мэдлэг бол хамгийн хүчтэй зэвсэг — ертөнцийг
                             өөрчлөхөд ашиглаж болно."

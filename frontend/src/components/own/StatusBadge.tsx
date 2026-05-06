@@ -1,32 +1,3 @@
-// export default function StatusBadge({ status }: { status: string }) {
-//     // const config: any = {
-//     //     Илгээсэн: "bg-orange-100 text-orange-600",
-//     //     Баталсан: "bg-green-100 text-green-600",
-//     //     Татгалсан: "bg-red-100 text-red-600",
-//     // };
-
-//     const config: any = {
-//     Илгээсэн: {
-//         dot: "bg-orange-400",
-//         badge: "bg-orange-50 text-orange-700 border-orange-200",
-//     },
-//     Татгалсан: {
-//         dot: "bg-red-400",
-//         badge: "bg-red-50 text-red-700 border-red-200",
-//     },
-//     Баталсан: {
-//         dot: "bg-green-400",
-//         badge: "bg-green-50 text-green-700 border-green-200",
-//     },
-// };
-
-//     return (
-//         <span className={`px-2 py-1 text-xs rounded-full ${config[status]}`}>
-//             {status}
-//         </span>
-//     );
-// }
-
 export default function StatusBadge({ status }: { status: string }) {
     const config: any = {
         "Хүлээгдэж байгаа": {

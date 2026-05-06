@@ -2,7 +2,16 @@
 "use client";
 import DataTable from "@/components/own/data-table/DataTable";
 import { thesisColumns } from "./columns";
-import { Info, Plus, Send, User } from "lucide-react";
+import {
+    BookOpen,
+    Check,
+    Info,
+    Loader,
+    Plus,
+    Send,
+    User,
+    X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetcher } from "@/utils/fetcher";
 import SendToTeacherModal from "@/components/own/custom-modals/sendTeacherModal";
@@ -313,6 +322,37 @@ type Thesis = {
 //     },
 // ];
 
+type StatusCompProps = {
+    title: string;
+    value: number;
+    icon?: React.ReactNode;
+    color?: string;
+};
+
+const StatusComp = ({
+    title,
+    value,
+    icon,
+    color = "blue",
+}: StatusCompProps) => {
+    return (
+        <div className="bg-white border border-gray-200 rounded-xl p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
+            <div
+                className={`bg-${color}-100 text-${color}-500 p-2.5 rounded-xl shrink-0`}
+            >
+                {icon}
+            </div>
+
+            <div>
+                <p className="text-xs text-gray-400 mb-0.5">{title}</p>
+                <p className="text-2xl font-bold text-gray-900 leading-none">
+                    {value}
+                </p>
+            </div>
+        </div>
+    );
+};
+
 export default function Page() {
     const router = useRouter();
     const [data, setData] = useState<Thesis[]>([]);
@@ -321,6 +361,33 @@ export default function Page() {
     const [editingItem, setEditingItem] = useState<Thesis | null>(null);
     const [isSendModalOpen, setIsSendModalOpen] = useState(false);
     const { openConfirm } = useConfirm();
+
+    const statusCards = [
+        {
+            title: "Нийт сэдвүүд",
+            value: data.length,
+            icon: <BookOpen size={18} />,
+            color: "blue",
+        },
+        {
+            title: "Хүлээгдэж байгаа",
+            value: data.filter((d) => d.status === "Хүлээгдэж байгаа").length,
+            icon: <Loader size={18} />,
+            color: "amber",
+        },
+        {
+            title: "Баталсан",
+            value: data.filter((d) => d.status === "Баталсан").length,
+            icon: <Check size={18} />,
+            color: "green",
+        },
+        {
+            title: "Татгалсан",
+            value: data.filter((d) => d.status === "Татгалсан").length,
+            icon: <X size={18} />,
+            color: "red",
+        },
+    ];
 
     const handleDelete = async (id: string) => {
         const confirmed = await openConfirm({
@@ -436,31 +503,9 @@ export default function Page() {
             </p>
             {/* Summary Box */}
             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Нийт сэдвүүд</p>
-                    <h2 className="text-2xl font-bold">{data.length}</h2>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Хүлээгдэж байгаа</p>
-                    <h2 className="text-2xl font-bold">
-                        {
-                            data.filter((d) => d.status === "Хүлээгдэж байгаа")
-                                .length
-                        }
-                    </h2>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Баталсан</p>
-                    <h2 className="text-2xl font-bold">
-                        {data.filter((d) => d.status === "Баталсан").length}
-                    </h2>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Татгалсан</p>
-                    <h2 className="text-2xl font-bold">
-                        {data.filter((d) => d.status === "Татгалсан").length}
-                    </h2>
-                </div>
+                {statusCards.map((item, i) => (
+                    <StatusComp key={i} {...item} />
+                ))}
             </div>
 
             <p className="text-[12px] font-bold text-gray-300 uppercase tracking-[0.12em] mb-2">

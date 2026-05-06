@@ -6,14 +6,29 @@ const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: any) => {
     const [user, setUser] = useState<any>(null);
+    const [hydrated, setHydrated] = useState(false);
     const router = useRouter();
 
+    const setUserWithStorage = (data: any) => {
+        setUser(data);
+        localStorage.setItem("user", JSON.stringify(data));
+    };
+
     useEffect(() => {
-        // Refresh-ийн үед localStorage-с user авч өгнө
         const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
+
+        try {
+            if (storedUser && storedUser !== "undefined") {
+                setUser(JSON.parse(storedUser));
+            } else {
+                localStorage.removeItem("user");
+            }
+        } catch (err) {
+            console.error("Invalid user in localStorage:", err);
+            localStorage.removeItem("user");
         }
+
+        setHydrated(true);
     }, []);
 
     // 🔥 logout function
@@ -26,7 +41,9 @@ export const AuthProvider = ({ children }: any) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, logout }}>
+        <AuthContext.Provider
+            value={{ user, setUser: setUserWithStorage, logout }}
+        >
             {children}
         </AuthContext.Provider>
     );

@@ -1,16 +1,9 @@
+//student/teacher/columns.tsx
 import { Column } from "@/components/own/data-table/types";
 import StatusBadge from "@/components/own/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/utils/formatDate";
 import { SquarePen, Trash2Icon } from "lucide-react";
-
-// type Teacher = {
-//     id: string;
-//     fullName: string;
-//     email: string;
-//     department: string;
-//     status: string;
-// };
 
 type Teacher = {
     _id: string;
@@ -20,6 +13,7 @@ type Teacher = {
     supervisorId: string;
     supervisorCode: string;
     email: string;
+    status: string;
 };
 
 export const teacherColumns = () // onDelete: (id: string) => void,
@@ -54,6 +48,11 @@ export const teacherColumns = () // onDelete: (id: string) => void,
         header: "Имэйл",
         accessor: "email",
         visible: true,
+    },
+    {
+        header: "Төлөв",
+        accessor: "status",
+        cell: (row) => <StatusBadge status={row.status} />,
     },
     {
         header: "Үйлдэл",

@@ -8,15 +8,16 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            // 🔥 TOKEN expired
+        console.log("RES", error);
 
-            // token устгах
+        if (
+            error.response?.status === 401 &&
+            error.config?.headers?.Authorization
+        ) {
             localStorage.removeItem("token");
             localStorage.removeItem("role");
             localStorage.removeItem("user");
 
-            // login руу redirect
             window.location.href = "/expired";
         }
 

@@ -1,8 +1,8 @@
-//student/thesis/page.tsx
+//teacher/thesis/page.tsx
 "use client";
 import DataTable from "@/components/own/data-table/DataTable";
 import { studentColumns } from "./columns";
-import { Plus, Send } from "lucide-react";
+import { BookOpen, Check, Loader, Plus, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetcher } from "@/utils/fetcher";
 import AddTopicModal from "@/components/own/custom-modals/addTopicModal";
@@ -26,6 +26,7 @@ type Student = {
     description: string;
     addedDate: string;
     editedDate: string;
+    status: string;
 };
 
 // const data = [
@@ -318,50 +319,130 @@ type Student = {
 //     },
 // ];
 
+type StatusCompProps = {
+    title: string;
+    value: number;
+    icon?: React.ReactNode;
+    color?: string;
+};
+
+const StatusComp = ({
+    title,
+    value,
+    icon,
+    color = "blue",
+}: StatusCompProps) => {
+    return (
+        <div className="bg-white border border-gray-200 rounded-xl p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
+            <div
+                className={`bg-${color}-100 text-${color}-500 p-2.5 rounded-xl shrink-0`}
+            >
+                {icon}
+            </div>
+
+            <div>
+                <p className="text-xs text-gray-400 mb-0.5">{title}</p>
+                <p className="text-2xl font-bold text-gray-900 leading-none">
+                    {value}
+                </p>
+            </div>
+        </div>
+    );
+};
+
 export default function Page() {
     const router = useRouter();
     const [data, setData] = useState<Student[]>([]);
     const [loading, setLoading] = useState(true);
-    const [studentId, setStudentId] = useState();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingItem, setEditingItem] = useState<Student | null>(null);
-    const [isSendModalOpen, setIsSendModalOpen] = useState(false);
     const { openConfirm } = useConfirm();
 
-    // EDIT OPEN
-    const handleEdit = (row: Student) => {
-        setEditingItem(row);
-        setIsModalOpen(true);
-    };
-    const columns = studentColumns(handleEdit);
+    console.log("DATA", data);
 
-    // SAVE (ADD + EDIT)
-    const handleSave = async (formData: any) => {
-        if (editingItem) {
-            const res = await fetcher(
-                `/api/thesis/editThesis/${editingItem._id}`,
-                {
-                    method: "PUT",
-                    data: formData,
-                },
-            );
+    const statusCards = [
+        {
+            title: "Нийт хүсэлт",
+            value: data.length,
+            icon: <BookOpen size={18} />,
+            color: "blue",
+        },
+        {
+            title: "Хүлээгдэж байгаа",
+            // value: data.length,
+            value: data.filter((d) => d.status === "Хүлээгдэж байгаа").length,
+            icon: <Loader size={18} />,
+            color: "amber",
+        },
+        {
+            title: "Баталсан",
+            // value: data.length,
+            value: data.filter((d) => d.status === "Баталсан").length,
+            icon: <Check size={18} />,
+            color: "green",
+        },
+        {
+            title: "Татгалсан",
+            // value: data.length,
+            value: data.filter((d) => d.status === "Татгалсан").length,
+            icon: <X size={18} />,
+            color: "red",
+        },
+    ];
 
-            if (res.success) {
-                setData((prev) =>
-                    prev.map((d) => (d._id === editingItem._id ? res.data : d)),
-                );
-            }
-        } else {
-            const res = await fetcher("/api/thesis/createThesis", {
-                method: "POST",
-                data: formData,
+    const handleApprove = async (id: string) => {
+        const confirmed = await openConfirm({
+            title: "Та батлах уу?",
+            description: "",
+            confirmText: "Батлах",
+            variant: "default",
+        });
+
+        if (!confirmed) return;
+        console.log("reqid", id);
+
+        try {
+            const res = await fetcher(`/api/thesis/request/${id}/approve`, {
+                method: "PUT",
             });
 
+            console.log("APPROVE RES", res);
+
             if (res.success) {
-                setData((prev) => [...prev, res.data]);
+                toast.success("Хүсэлт батлагдлаа");
+
+                setData((prev) => prev.filter((item) => item._id !== id));
             }
+        } catch (err) {
+            toast.error("Алдаа гарлаа");
         }
     };
+    const handleReject = async (id: string) => {
+        const confirmed = await openConfirm({
+            title: "Та татгалзах уу?",
+            description: "",
+            confirmText: "Татгалзах",
+            variant: "destructive",
+        });
+
+        if (!confirmed) return;
+        try {
+            const res = await fetcher(`/api/thesis/request/${id}/reject`, {
+                method: "PUT",
+            });
+
+            console.log("REJECT RES", res);
+
+            if (res.success) {
+                toast.success("Хүсэлт татгалзлаа");
+
+                // 🔥 UI update
+                setData((prev) => prev.filter((item) => item._id !== id));
+            }
+        } catch (err) {
+            toast.error("Алдаа гарлаа");
+        }
+    };
+
+    const columns = studentColumns(handleApprove, handleReject);
 
     useEffect(() => {
         const getData = async () => {
@@ -387,6 +468,7 @@ export default function Page() {
                         description: req.description ?? "",
                         addedDate: req.createdAt,
                         editedDate: req.updatedAt,
+                        status: req.status, // ✅ ЭНЭ ДУТУУ БАЙСАН
                     }));
 
                     console.log("MAPPED", mapped);
@@ -401,68 +483,31 @@ export default function Page() {
         };
 
         getData();
-    }, []);
-
-    // useEffect(() => {
-    //     const getData = async () => {
-    //         try {
-    //             const res = await fetcher("/api/thesis/requests/incoming", {
-    //                 method: "GET",
-    //             });
-
-    //             console.log("res", res.data);
-
-    //             if (res.success) {
-    //                 setData(res);
-    //             }
-    //         } catch (err) {
-    //             toast.error("Өгөгдөл авахад алдаа гарлаа");
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     getData();
-    // }, []);
+    }, [data.length]);
 
     if (loading) return <LoadingComp />;
 
     return (
-        <div className="flex flex-col h-[88vh]">
+        <div className="flex flex-col h-[86vh]">
+            <p className="text-[12px] font-bold text-gray-300 uppercase tracking-[0.12em] mb-2">
+                Хураангуй
+            </p>
             {/* Summary Box */}
             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Нийт сэдвүүд</p>
-                    <h2 className="text-2xl font-bold">{data.length}</h2>
-                </div>
-                {/* <div className="bg-white shadow rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Хүлээгдэж байгаа</p>
-                    <h2 className="text-2xl font-bold">
-                        {
-                            data.filter((d) => d.status === "Хүлээгдэж байгаа")
-                                .length
-                        }
-                    </h2>
-                </div>
-                <div className="bg-white shadow rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Баталсан</p>
-                    <h2 className="text-2xl font-bold">
-                        {data.filter((d) => d.status === "Баталсан").length}
-                    </h2>
-                </div>
-                <div className="bg-white shadow rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Татгалсан</p>
-                    <h2 className="text-2xl font-bold">
-                        {data.filter((d) => d.status === "Татгалсан").length}
-                    </h2>
-                </div> */}
+                {statusCards.map((item, i) => (
+                    <StatusComp key={i} {...item} />
+                ))}
             </div>
-
+            <p className="text-[12px] font-bold text-gray-300 uppercase tracking-[0.12em] mb-2">
+                Хүснэгт
+            </p>
             {/* DataTable */}
-            <div className="flex-1 overflow-auto pb-5">
+            <div className="flex-1 overflow-auto">
                 <DataTableStudents
                     title="Хүсэлт илгээсэн оюутнууд"
-                    data={data.map((d) => ({ ...d, id: d._id }))}
+                    data={data
+                        // .filter((d) => d.status !== "Татгалзсан") // 🔥 ЭНЭ НЭМ
+                        .map((d) => ({ ...d, id: d._id }))}
                     columns={columns}
                     onRowClick={(row) =>
                         router.push(`/teacher/thesis/${row.studentId}`)

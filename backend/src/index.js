@@ -1,3 +1,4 @@
+//index.js
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -7,6 +8,9 @@ const testRoutes = require("./routes/testRoutes");
 const testDataRoutes = require("./routes/testDataRoutes");
 const thesisRoutes = require("./routes/thesisRoutes");
 const authRoutes = require("./routes/AuthRoutes/authRoutes");
+const studentRoutes = require("./routes/studentRoutes");
+const supervisorRoutes = require("./routes/supervisorRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 const PORT = 8000;
@@ -42,11 +46,20 @@ app.get("/", (req, res) => {
 app.use("/api/test", testRoutes);
 app.use("/api/testData", testDataRoutes);
 
+// Admin routes
+app.use("/api/admin", adminRoutes);
+
 // Thesis routes
 app.use("/api/thesis", thesisRoutes);
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+
+// Student routes
+app.use("/api/student", studentRoutes);
+
+// Supervisor routes
+app.use("/api/supervisor", supervisorRoutes);
 
 // 404
 app.use((req, res) => {

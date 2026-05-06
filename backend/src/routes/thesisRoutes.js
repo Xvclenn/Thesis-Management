@@ -9,6 +9,12 @@ const {
     createThesisRequest,
     getIncomingRequests,
     getThesisByStudentId,
+    getMyRequestedTeachers,
+    rejectThesisRequest,
+    approveThesisRequest,
+    getApprovedStudents,
+    sendMessage,
+    getMessages,
 } = require("../controllers/thesisController");
 const router = express.Router();
 const { protect, authorize } = require("../middleware/authMiddleware");
@@ -23,6 +29,7 @@ router.post("/createThesisBulk", protect, authorize("admin"), createThesisBulk);
 router.get("/", protect, getThesis);
 
 // ✅ Get Thesis by ID
+router.get("/approved", protect, authorize("supervisor"), getApprovedStudents);
 router.get("/:id", protect, getThesisById);
 
 // ✅ Edit Thesis (Admin, Supervisor, Student)
@@ -41,6 +48,29 @@ router.get(
     authorize("supervisor"),
     getIncomingRequests,
 );
+
+router.get(
+    "/requests/my-teachers",
+    protect,
+    authorize("student"),
+    getMyRequestedTeachers,
+);
+
+router.put(
+    "/request/:id/reject",
+    protect,
+    authorize("supervisor"),
+    rejectThesisRequest,
+);
+
+router.put(
+    "/request/:id/approve",
+    protect,
+    authorize("supervisor"),
+    approveThesisRequest,
+);
+router.post("/message", protect, sendMessage);
+router.get("/messages/:id", protect, getMessages);
 
 //
 router.get("/student/:studentId", protect, getThesisByStudentId);

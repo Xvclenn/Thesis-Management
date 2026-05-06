@@ -1,8 +1,9 @@
+//teacher/thesis/columns.tsx
 import { Column } from "@/components/own/data-table/types";
 import StatusBadge from "@/components/own/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/utils/formatDate";
-import { SquarePen, Trash2Icon } from "lucide-react";
+import { Check, SquarePen, Trash2Icon, X } from "lucide-react";
 
 type Student = {
     _id: string;
@@ -15,11 +16,12 @@ type Student = {
     description: string;
     addedDate: string;
     editedDate: string;
+    status: string;
 };
 
 export const studentColumns = (
-    // onDelete: (id: string) => void,
-    onEdit: (row: Student) => void,
+    onApprove: (id: string) => void,
+    onReject: (id: string) => void,
 ): Column<Student>[] => [
     {
         header: "ID",
@@ -69,24 +71,35 @@ export const studentColumns = (
         cell: (row: any) => formatDate(row.editedDate),
     },
     {
+        header: "Төлөв",
+        accessor: "status",
+        cell: (row) => <StatusBadge status={row.status} />,
+    },
+    {
         header: "Үйлдэл",
         visible: true,
         cell: (row) => (
             <div className="flex gap-2">
                 <Button
                     variant="secondary"
-                    className="flex items-center gap-1.5 transition-all cursor-pointer"
-                    onClick={() => onEdit(row)}
+                    className="group flex text-green-800 bg-green-200 items-center gap-1.5 transition-all hover:bg-green-200 cursor-pointer"
+                    onClick={() => onApprove(row._id)}
                 >
-                    <SquarePen size={14} />
+                    <Check size={14} />{" "}
+                    <span className="hidden group-hover:block transition-all">
+                        Батлах
+                    </span>
                 </Button>
-                {/* <Button
+                <Button
                     variant="destructive"
-                    className="flex items-center gap-1.5 transition-all cursor-pointer"
-                    onClick={() => onDelete(row._id)}
+                    className="group flex items-center gap-1.5 transition-all cursor-pointer"
+                    onClick={() => onReject(row._id)}
                 >
-                    <Trash2Icon size={14} />
-                </Button> */}
+                    <X size={14} />{" "}
+                    <span className="hidden group-hover:block transition-all">
+                        Татгалзах
+                    </span>
+                </Button>
             </div>
         ),
     },

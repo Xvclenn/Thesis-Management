@@ -93,9 +93,9 @@ export default function DataTableSupervisor<T extends { id: string }>({
                     </div>
                 ) : (
                     <table className="border-collapse w-full">
-                        <thead className="sticky uppercase top-0 text-left text-sm font-semibold z-10 shadow-sm">
+                        <thead className="sticky uppercase text-xs top-0 text-left font-semibold z-10 shadow-sm">
                             <tr>
-                                <th className="p-4">
+                                <th className="px-3">
                                     <div className="flex items-center">
                                         <Checkbox
                                             className="cursor-pointer"
@@ -105,11 +105,11 @@ export default function DataTableSupervisor<T extends { id: string }>({
                                     </div>
                                 </th>
 
-                                <th className="w-10 px-3 py-3 font-semibold text-gray-500 text-center">
+                                <th className="w-10 px-3 py-2 font-semibold text-gray-500 text-center">
                                     №
                                 </th>
 
-                                <th className="px-4 py-3 text-gray-500">
+                                <th className="px-4 py-2 text-gray-500">
                                     <span>Зураг</span>
                                 </th>
 
@@ -118,7 +118,7 @@ export default function DataTableSupervisor<T extends { id: string }>({
                                         <th
                                             key={i}
                                             scope="col"
-                                            className={`px-6 py-3 text-gray-500 w-100 truncate`}
+                                            className={`px-6 py-2 text-gray-500 w-100 truncate`}
                                         >
                                             {col.header}
                                         </th>
@@ -136,11 +136,11 @@ export default function DataTableSupervisor<T extends { id: string }>({
                                 return (
                                     <tr
                                         key={i}
-                                        className={`border-t border-gray-100 transition-all hover:bg-gray-200 cursor-pointer ${
+                                        className={`border-t border-gray-100 text-xs transition-all hover:bg-gray-200 cursor-pointer ${
                                             isSelected ? "bg-gray-100" : ""
                                         }`}
                                     >
-                                        <td className="w-4 p-4">
+                                        <td className="w-4 px-3">
                                             <div className="flex items-center">
                                                 <Checkbox
                                                     className="cursor-pointer"
@@ -152,11 +152,11 @@ export default function DataTableSupervisor<T extends { id: string }>({
                                             </div>
                                         </td>
 
-                                        <td className="w-10 px-3 py-3 text-sm text-gray-400 text-center tabular-nums">
+                                        <td className="w-10 px-3 py-2 text-xs text-gray-400 text-center tabular-nums">
                                             {rowNumber}
                                         </td>
 
-                                        <td className="px-4 py-4 text-sm">
+                                        <td className="px-4 py-2 text-sm">
                                             <div className="flex items-center">
                                                 <Image
                                                     src={
@@ -180,7 +180,7 @@ export default function DataTableSupervisor<T extends { id: string }>({
                                                 return (
                                                     <td
                                                         key={j}
-                                                        className="px-6 py-4 text-sm truncate max-w-80"
+                                                        className="px-6 py-2 truncate max-w-80"
                                                     >
                                                         {col.cell(row)}
                                                     </td>
@@ -192,7 +192,7 @@ export default function DataTableSupervisor<T extends { id: string }>({
                                             return (
                                                 <td
                                                     key={j}
-                                                    className={`px-6 py-4 text-sm truncate max-w-80`}
+                                                    className={`px-6 py-2 truncate max-w-80`}
                                                     onClick={() => {
                                                         if (onRowClick) {
                                                             onRowClick(row); // ✅ Custom handler

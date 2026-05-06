@@ -4,6 +4,7 @@
 import React from "react";
 
 type TextInputProps = {
+    className?: string;
     label?: string;
     value: string;
     onChange: (value: string) => void;
@@ -13,6 +14,7 @@ type TextInputProps = {
 };
 
 export default function TextInput({
+    className = "",
     label,
     value,
     onChange,
@@ -33,7 +35,7 @@ export default function TextInput({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className={`w-full border rounded-lg px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 transition
+                className={`w-full ${className} border rounded-lg px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 transition
                     ${
                         error
                             ? "border-red-300 focus:ring-red-400"

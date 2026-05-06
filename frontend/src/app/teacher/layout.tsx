@@ -21,6 +21,8 @@ import {
     LogOutIcon,
     LogOut,
     GraduationCap,
+    LockKeyholeOpen,
+    MessageCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,15 +50,21 @@ const menus = [
         href: "/teacher/thesis",
         roles: ["supervisor", "admin"],
     },
+    // {
+    //     name: "Багш",
+    //     icon: Users,
+    //     href: "/teacher/teacher",
+    //     roles: ["supervisor", "admin"],
+    // },
+    // {
+    //     name: "Оюутан",
+    //     icon: UserCheck,
+    //     href: "/teacher/student",
+    //     roles: ["supervisor", "admin"],
+    // },
     {
-        name: "Багш",
-        icon: Users,
-        href: "/teacher/teacher",
-        roles: ["supervisor", "admin"],
-    },
-    {
-        name: "Оюутан",
-        icon: UserCheck,
+        name: "Чат",
+        icon: MessageCircle,
         href: "/teacher/student",
         roles: ["supervisor", "admin"],
     },
@@ -65,6 +73,12 @@ const menus = [
         icon: Calendar,
         href: "/teacher/calendar",
         roles: ["supervisor", "admin"],
+    },
+    {
+        name: "Эрхийн удирдлага",
+        icon: LockKeyholeOpen,
+        href: "/teacher/role-control",
+        roles: ["admin"],
     },
     {
         name: "Комисс",
@@ -143,15 +157,13 @@ export default function TeacherLayout({
                 <div className="mx-4 mb-5 px-4 py-3 rounded-2xl bg-orange-50 border border-orange-100 flex items-center gap-3">
                     <div className="relative shrink-0">
                         <Image
-                            src={
-                                user?.image ||
-                                "https://res.cloudinary.com/dpxaln0kd/image/upload/v1775404588/profiles/imwuimkxptusw4ba5edx.png"
-                            }
+                            src={user?.image || "/assets/user.png"}
                             alt="avatar"
-                            width={36}
-                            height={36}
-                            className="w-9 h-9 rounded-xl object-cover"
+                            width={100}
+                            height={100}
+                            className="w-9 h-9 rounded-xl object-cover ring-1 ring-orange-200 p-0.5"
                         />
+
                         <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-orange-50" />
                     </div>
                     <div className="min-w-0">
@@ -169,7 +181,7 @@ export default function TeacherLayout({
                     <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.12em] px-3 mb-2">
                         Үндсэн цэс
                     </p>
-                    {menus.map((menu) => {
+                    {filteredMenus.map((menu) => {
                         const Icon = menu.icon;
                         const active = pathname.startsWith(menu.href);
                         return (
@@ -206,13 +218,6 @@ export default function TeacherLayout({
 
                 {/* ── Bottom actions ── */}
                 <div className="px-3 py-4 space-y-0.5 border-t border-gray-100 mt-2">
-                    {/* <Link
-                        href="/supervisor/profile"
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all"
-                    >
-                        <Settings size={16} className="text-gray-400" />
-                        Тохиргоо
-                    </Link> */}
                     <button
                         onClick={logout}
                         className="w-full cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all"
@@ -283,12 +288,12 @@ export default function TeacherLayout({
                                         <Image
                                             src={
                                                 user?.image ||
-                                                "https://res.cloudinary.com/dpxaln0kd/image/upload/v1775404588/profiles/imwuimkxptusw4ba5edx.png"
+                                                "/assets/user.png"
                                             }
                                             alt="User"
-                                            width={30}
-                                            height={30}
-                                            className="w-7 h-7 rounded-full object-cover"
+                                            width={100}
+                                            height={100}
+                                            className="w-7 h-7 rounded-full object-cover ring-1 ring-orange-200 p-0.5"
                                         />
                                         <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full border border-white" />
                                     </div>
@@ -312,7 +317,7 @@ export default function TeacherLayout({
                             >
                                 <DropdownMenuItem
                                     onClick={() =>
-                                        router.push("/supervisor/profile")
+                                        router.push("/teacher/profile")
                                     }
                                     className="cursor-pointer focus:bg-orange-50 focus:text-orange-700"
                                 >

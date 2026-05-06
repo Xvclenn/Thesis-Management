@@ -10,19 +10,19 @@ const LoadingComp = () => {
 
             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-gray-200 rounded-lg p-5 flex flex-col gap-2">
-                    <Skeleton className="h-5 w-50 rounded-full" />
+                    <Skeleton className="h-5 max-w-50 rounded-full" />
                     <Skeleton className="h-5 w-25 rounded-full" />
                 </div>
                 <div className="bg-gray-200 rounded-lg p-5 flex flex-col gap-2">
-                    <Skeleton className="h-5 w-50 rounded-full" />
+                    <Skeleton className="h-5 max-w-w-50 rounded-full" />
                     <Skeleton className="h-5 w-25 rounded-full" />
                 </div>
                 <div className="bg-gray-200 rounded-lg p-5 flex flex-col gap-2">
-                    <Skeleton className="h-5 w-50 rounded-full" />
+                    <Skeleton className="h-5 max-w-w-50 rounded-full" />
                     <Skeleton className="h-5 w-25 rounded-full" />
                 </div>
                 <div className="bg-gray-200 rounded-lg p-5 flex flex-col gap-2">
-                    <Skeleton className="h-5 w-50 rounded-full" />
+                    <Skeleton className="h-5 max-w-w-50 rounded-full" />
                     <Skeleton className="h-5 w-25 rounded-full" />
                 </div>
             </div>

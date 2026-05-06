@@ -1,3 +1,4 @@
+//teacher/profile/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,10 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import StudentProfileModal from "@/components/own/custom-modals/studentProfileModal";
 import { fetcher } from "@/utils/fetcher";
 import { toast, ToastContainer } from "react-toastify";
 import LoadingComp from "@/components/own/LoadingComp";
+import TeacherProfileModal from "@/components/own/custom-modals/teacherProfileModal";
 
 // ================= Types =================
 interface BioFieldProps {
@@ -30,7 +31,7 @@ function BioField({ label, value }: BioFieldProps) {
 }
 
 // ================= Main Page =================
-export default function StudentProfile() {
+export default function TeacherProfile() {
     const { user, setUser } = useAuth();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,7 +47,7 @@ export default function StudentProfile() {
         try {
             setLoading(true);
 
-            const res = await fetcher("/api/student/profile", {
+            const res = await fetcher("/api/supervisor/profile", {
                 method: "PUT",
                 data,
             });
@@ -111,9 +112,9 @@ export default function StudentProfile() {
 
     // ================= BIO DATA =================
     const bioFields: Array<[string, string]> = [
-        ["Мэргэжил", user?.studentProfile?.major],
-        ["Түвшин", String(user?.studentProfile?.year)],
-        ["Оюутны код", user?.studentProfile?.studentCode],
+        ["Тэнхим", user?.supervisorProfile?.department],
+        ["Зэрэг", String(user?.supervisorProfile?.position)],
+        ["Багшийн код", user?.supervisorProfile?.supervisorCode],
         ["Байршил", ""],
         ["Дуртай технологи", ""],
         ["Ашигладаг хэрэгсэл", ""],
@@ -173,7 +174,7 @@ export default function StudentProfile() {
                     </p>
 
                     <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                        {user?.studentProfile?.studentCode}
+                        {user?.supervisorProfile?.supervisorCode}
                     </span>
                 </div>
 
@@ -195,7 +196,7 @@ export default function StudentProfile() {
             </div>
 
             {/* ================= MODAL ================= */}
-            <StudentProfileModal
+            <TeacherProfileModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSave={handleSave}

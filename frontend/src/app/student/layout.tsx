@@ -19,6 +19,7 @@ import {
     GraduationCap,
     Bell,
     Settings,
+    MessageCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,6 +38,7 @@ const menus = [
     { name: "Нүүр", icon: Home, href: "/student/dashboard" },
     { name: "Төгсөлтийн ажил", icon: LayoutList, href: "/student/thesis" },
     { name: "Багш", icon: Users, href: "/student/teacher" },
+    { name: "Чат", icon: MessageCircle, href: "/student/chat" },
     { name: "Хуанли", icon: Calendar, href: "/student/calendar" },
 ];
 
@@ -91,34 +93,36 @@ export default function StudentLayout({
                 </button>
 
                 {/* ── Brand ── */}
-                <div className="px-6 pt-7 pb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md shadow-orange-200 shrink-0">
-                            <GraduationCap size={20} className="text-white" />
-                        </div>
-                        <div>
-                            <p className="text-[15px] font-extrabold text-gray-900 leading-none tracking-tight">
-                                MUST
-                            </p>
-                            <p className="text-[11px] text-gray-400 mt-0.5 leading-none">
-                                Цахим дипломын портал
-                            </p>
+                <Link href="/student/dashboard">
+                    <div className="px-6 pt-7 pb-6">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md shadow-orange-200 shrink-0">
+                                <GraduationCap
+                                    size={20}
+                                    className="text-white"
+                                />
+                            </div>
+                            <div>
+                                <p className="text-[15px] font-extrabold text-gray-900 leading-none tracking-tight">
+                                    MUST
+                                </p>
+                                <p className="text-[11px] text-gray-400 mt-0.5 leading-none">
+                                    Цахим дипломын портал
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Link>
 
                 {/* ── User mini card ── */}
                 <div className="mx-4 mb-5 px-4 py-3 rounded-2xl bg-orange-50 border border-orange-100 flex items-center gap-3">
                     <div className="relative shrink-0">
                         <Image
-                            src={
-                                user?.image ||
-                                "https://res.cloudinary.com/dpxaln0kd/image/upload/v1775404588/profiles/imwuimkxptusw4ba5edx.png"
-                            }
+                            src={user?.image || "/assets/user.png"}
                             alt="avatar"
-                            width={36}
-                            height={36}
-                            className="w-9 h-9 rounded-xl object-cover"
+                            width={100}
+                            height={100}
+                            className="w-9 h-9 rounded-xl object-cover ring-1 ring-orange-200 p-0.5"
                         />
                         <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-orange-50" />
                     </div>
@@ -174,13 +178,6 @@ export default function StudentLayout({
 
                 {/* ── Bottom actions ── */}
                 <div className="px-3 py-4 space-y-0.5 border-t border-gray-100 mt-2">
-                    {/* <Link
-                        href="/student/profile"
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all"
-                    >
-                        <Settings size={16} className="text-gray-400" />
-                        Тохиргоо
-                    </Link> */}
                     <button
                         onClick={logout}
                         className="w-full cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all"
@@ -254,9 +251,9 @@ export default function StudentLayout({
                                                 "https://res.cloudinary.com/dpxaln0kd/image/upload/v1775404588/profiles/imwuimkxptusw4ba5edx.png"
                                             }
                                             alt="User"
-                                            width={30}
-                                            height={30}
-                                            className="w-7 h-7 rounded-full object-cover"
+                                            width={100}
+                                            height={100}
+                                            className="w-7 h-7 rounded-full object-cover ring-1 ring-orange-200 p-0.5"
                                         />
                                         <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full border border-white" />
                                     </div>

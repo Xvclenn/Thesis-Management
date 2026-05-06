@@ -6,43 +6,51 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret123";
 
 // 🔹 Token шалгах middleware
 const protect = async (req, res, next) => {
-    let token;
-
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith("Bearer")
-    ) {
-        token = req.headers.authorization.split(" ")[1];
-    }
-
-    if (!token) {
-        return res
-            .status(401)
-            .json({ success: false, message: "Not authorized, token missing" });
-    }
-
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        let token;
 
-        // ✅ Virtual-ийг populate хийж attach хийх
-        req.user = await User.findById(decoded.id)
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.startsWith("Bearer")
+        ) {
+            token = req.headers.authorization.split(" ")[1];
+        }
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "TOKEN_MISSING",
+            });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.id)
             .select("-password")
             .populate("studentProfile")
             .populate("supervisorProfile");
 
-        // Student-ийн хувьд studentProfile заавал байх ёстой
-        if (req.user.role.includes("student") && !req.user.studentProfile) {
+        if (!user) {
             return res.status(401).json({
                 success: false,
-                message: "Student profile not found",
+                message: "USER_NOT_FOUND",
             });
         }
 
+        req.user = user;
+
         next();
     } catch (err) {
-        res.status(401).json({
+        if (err.name === "TokenExpiredError") {
+            return res.status(401).json({
+                success: false,
+                message: "TOKEN_EXPIRED",
+            });
+        }
+
+        return res.status(401).json({
             success: false,
-            message: "Not authorized, token invalid",
+            message: "TOKEN_INVALID",
         });
     }
 };

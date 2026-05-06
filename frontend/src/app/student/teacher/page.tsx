@@ -1,3 +1,4 @@
+//student/teacher/page.tsx
 "use client";
 import DataTable from "@/components/own/data-table/DataTable";
 import { useEffect, useState } from "react";
@@ -5,6 +6,7 @@ import { fetcher } from "@/utils/fetcher";
 import { teacherColumns } from "./columns";
 import DataTableSupervisor from "@/components/own/data-table/DataTableSupervisor";
 import LoadingComp from "@/components/own/LoadingComp";
+import { Users } from "lucide-react";
 
 type Teacher = {
     _id: string;
@@ -14,6 +16,7 @@ type Teacher = {
     supervisorId: string;
     supervisorCode: string;
     email: string;
+    status: string;
 };
 
 // const data = [
@@ -77,9 +80,63 @@ type Teacher = {
 //     // },
 // ];
 
+type StatusCompProps = {
+    title: string;
+    value: number;
+    icon?: React.ReactNode;
+    color?: string;
+};
+
+const StatusComp = ({
+    title,
+    value,
+    icon,
+    color = "blue",
+}: StatusCompProps) => {
+    return (
+        <div className="bg-white border border-gray-200 rounded-xl p-5 flex items-start gap-4 hover:shadow-sm transition-shadow">
+            <div
+                className={`bg-${color}-100 text-${color}-500 p-2.5 rounded-xl shrink-0`}
+            >
+                {icon}
+            </div>
+
+            <div>
+                <p className="text-xs text-gray-400 mb-0.5">{title}</p>
+                <p className="text-2xl font-bold text-gray-900 leading-none">
+                    {value}
+                </p>
+            </div>
+        </div>
+    );
+};
+
 export default function Page() {
     const [data, setData] = useState<Teacher[]>([]);
     const [loading, setLoading] = useState(true);
+
+    console.log("DATA", data);
+
+    const statusCards = [
+        {
+            title: "Хүсэлт илгээсэн багш нар",
+            value: data.length,
+            icon: <Users size={18} />,
+            color: "blue",
+        },
+        {
+            title: "Татгалзсан багш нар",
+            value: data.filter((d) => d.status === "Татгалсан").length,
+            icon: <Users size={18} />,
+            color: "red",
+        },
+        {
+            title: "Зөвшөөрсөн багш нар",
+            value: data.filter((d) => d.status === "Баталсан").length,
+            icon: <Users size={18} />,
+            color: "green",
+        },
+    ];
 
     useEffect(() => {
         const getData = async () => {
@@ -88,20 +145,20 @@ export default function Page() {
                     success: boolean;
                     data: any[];
                     count: number;
-                }>("/api/auth/getAllTeachers", { method: "GET" });
+                }>("/api/thesis/requests/my-teachers", { method: "GET" });
 
-                console.log(res.data);
+                console.log("RESDATA", res);
 
                 if (res.success) {
                     const mapped = res.data.map((req) => ({
                         _id: req._id,
-                        supervisorId: req.supervisor?._id ?? "",
+                        supervisorId: req.supervisorId,
                         image: req.image ?? "",
                         firstName: req.firstName ?? "",
                         lastName: req.lastName ?? "",
-                        supervisorCode:
-                            req.supervisorProfile?.supervisorCode ?? "",
+                        supervisorCode: req.supervisorCode ?? "",
                         email: req.email ?? "",
+                        status: req.status, // ✅
                     }));
 
                     console.log("MAPPED", mapped);
@@ -118,28 +175,6 @@ export default function Page() {
         getData();
     }, []);
 
-    // useEffect(() => {
-    //     const getData = async () => {
-    //         try {
-    //             const res = await fetcher("/api/auth/getAllTeachers", {
-    //                 method: "GET",
-    //             });
-
-    //             console.log("API response:", res.data);
-
-    //             if (res.success) {
-    //                 setData(res.data);
-    //             }
-    //         } catch (err) {
-    //             console.error(err);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     getData();
-    // }, []);
-
     if (loading) return <LoadingComp />;
 
     return (
@@ -149,10 +184,9 @@ export default function Page() {
             </p>
             {/* Summary Box */}
             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white border border-gray-200 rounded-lg p-5 flex flex-col">
-                    <p className="text-gray-500 text-sm">Нийт багш нар</p>
-                    <h2 className="text-2xl font-bold">{data.length}</h2>
-                </div>
+                {statusCards.map((item, i) => (
+                    <StatusComp key={i} {...item} />
+                ))}
             </div>
 
             <p className="text-[12px] font-bold text-gray-300 uppercase tracking-[0.12em] mb-2">
